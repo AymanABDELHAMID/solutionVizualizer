@@ -26,13 +26,13 @@ gdf = gpd.GeoDataFrame(solution, geometry=gpd.points_from_xy(solution['x'], solu
 gdf.head()
 
 # Sort and group points to make lines
-#line_gdf = gdf.sort_values(by=['vehicle_id'])['geometry'].apply(lambda x: LineString(x.tolist()))
 gdf = gdf[["vehicle_id", "activity_index", "x", "y", "geometry"]]
-line_gdf = gpd.GeoDataFrame(gdf, geometry='geometry')
+line_gdf = gdf.sort_values(by=['activity_index']).groupby(['vehicle_id'])['geometry'].apply(lambda x: LineString(x.tolist()))
+line_gdf = gpd.GeoDataFrame(line_gdf, geometry='geometry')
 # vehicle_id
-line_gdf.head()
+# line_gdf.head()
 
-line_gdf.plot()
+# line_gdf.plot()
 
 # Write out
 line_gdf.to_file(outputDirectory + "lines.shp")
