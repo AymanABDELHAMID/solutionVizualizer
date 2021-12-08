@@ -11,12 +11,12 @@ pd.options.display.max_columns = 100
 pd.options.display.max_rows = 100
 
 # path
-inputDirectory = "./data/Results/Solutions"
+inputDirectory = "./data/Results/Solutions-electric/"
 outputDirectory = "./output/"
 
 # 1. entrer des données :
-solution = pd.read_csv(inputDirectory+"instance_output.txt", sep=';')
-delivery = pd.read_csv(inputDirectory+"vrp_deliveries.csv", sep=';')
+solution = pd.read_csv(inputDirectory+"instance_ouput_1.0.txt", sep=';')
+delivery = pd.read_csv("./data/vrp_deliveries.csv", sep=';')
 
 
 # 2. Merge solution and delivery to get x and y coordinates
@@ -48,14 +48,17 @@ m = folium.Map(location=[45.742330364, 4.821996712], zoom_start=14, tiles='Carto
 
 ## Getting the necessary data for the plot
 #1. filter the data from dataframe
-
+# I choose route 7
+# df.loc[df['column_name'] == some_value]
+route_SoC = solution.loc[solution['vehicle_id'] == 'vehicle_LEAD_7']
+route_SoC = route_SoC['name', 'distance', 'SoC', 'SoC %', 'Maximum Range', 'Duration', 'Activity_counter']
 
 #2. turn the dataframe into a .csv file
-
+route_SoC.to_csv(outputDirectory+"route_SoC.csv", index=False, header=True, delimiter=";")
 
 ## Plotting the charging station
 
-plt.rcParams['text.latex.preamble']='\\usepackage{lmodern}'
+plt.rcParams['text.latex.preamble'] = '\\usepackage{lmodern}'
 #Options
 params = {'text.usetex': True,
           'font.size': 10,
@@ -64,7 +67,7 @@ params = {'text.usetex': True,
 plt.rcParams.update(params)
 fig, ax = plt.subplots(1, 2)
 fig.set_size_inches(6, 3.5)
-with cbook.get_sample_data('data_SoC.csv') as file:
+with cbook.get_sample_data(outputDirectory+'route_SoC.csv') as file:
     array = np.loadtxt(file, delimiter=";")
     ax[0].plot(array[:, 0], array[:, 1], label="SoC")
     ax[0].set_xlabel('Iteration', fontsize=10, fontname="Times New Roman")
@@ -73,5 +76,5 @@ with cbook.get_sample_data('data_SoC.csv') as file:
     ax[0].set_title("(a) Waiting times", fontsize=10, fontname="Times New Roman")
     ax[0].grid(visible=True, which="both")
 fig.tight_layout()
-plt.savefig("algorithms_comparison.pdf")
+plt.savefig("route_SoC.pdf")
 plt.show()
