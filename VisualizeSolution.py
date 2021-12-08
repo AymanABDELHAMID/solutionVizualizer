@@ -46,6 +46,13 @@ line_gdf.to_file(outputDirectory + "lines.shp")
 # Creating a folium map
 m = folium.Map(location=[45.742330364, 4.821996712], zoom_start=14, tiles='CartoDB positron')
 
+## Getting the necessary data for the plot
+#1. filter the data from dataframe
+
+
+#2. turn the dataframe into a .csv file
+
+
 ## Plotting the charging station
 
 plt.rcParams['text.latex.preamble']='\\usepackage{lmodern}'
@@ -57,26 +64,14 @@ params = {'text.usetex': True,
 plt.rcParams.update(params)
 fig, ax = plt.subplots(1, 2)
 fig.set_size_inches(6, 3.5)
-with cbook.get_sample_data('D:\work\These\DRT_RemoteRebalancing\RLDRT\doc\papers\\abmtrans\\analyisis_files\waiting_times_comparison.csv') as file:
+with cbook.get_sample_data('data_SoC.csv') as file:
     array = np.loadtxt(file, delimiter=";")
-    ax[0].plot(array[:, 0], array[:, 1], label="MCF")
-    ax[0].plot(array[:, 0], array[:, 2], label="MFAR")
-    ax[0].plot(array[:, 0], array[:, 3], label="Q-Learning")
+    ax[0].plot(array[:, 0], array[:, 1], label="SoC")
     ax[0].set_xlabel('Iteration', fontsize=10, fontname="Times New Roman")
     ax[0].set_ylabel('Average waiting time [s]', fontsize=10, fontname="Times New Roman")
     ax[0].legend(fontsize=10)
     ax[0].set_title("(a) Waiting times", fontsize=10, fontname="Times New Roman")
     ax[0].grid(visible=True, which="both")
-with cbook.get_sample_data('D:\work\These\DRT_RemoteRebalancing\RLDRT\doc\papers\\abmtrans\\analyisis_files\\rejections_numbers_comparison.csv') as file:
-    array = np.loadtxt(file, delimiter=";")
-    ax[1].plot(array[:, 0], array[:, 1], label="MCF")
-    ax[1].plot(array[:, 0], array[:, 2], label="MFAR")
-    ax[1].plot(array[:, 0], array[:, 3], label="Q-Learning")
-    ax[1].set_xlabel('Iteration', fontsize=10, fontname="Times New Roman")
-    ax[1].set_ylabel('Number of rejected DRT requests', fontsize=10, fontname="Times New Roman")
-    ax[1].legend(fontsize=10)
-    ax[1].set_title("(b) Rejections", fontsize=10, fontname="Times New Roman")
-    ax[1].grid(visible=True, which="both")
 fig.tight_layout()
 plt.savefig("algorithms_comparison.pdf")
 plt.show()
